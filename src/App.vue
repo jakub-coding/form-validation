@@ -3,7 +3,7 @@
 		<div class="block__container">
 			<h1 class="container__title">User Registration</h1>
 
-			<form class="container__form" method="post" action="#">
+			<form name="regForm" class="container__form" method="post" action="#">
 
 				<h1 class="form__title">
 					{{ ! formPart? "1" : "2" }}
@@ -12,11 +12,11 @@
 				</h1>
 
 				<div v-show="! formPart" class="form__part-one">
-					<form-one ref="callValidationOne" @validation="partOneValidation" @output-one="outputDataHandleOne"/>
+					<form-one ref="validateFirst" @output-one="formOneOutputHandler"/>
 				</div>
 
 				<div v-show="formPart" class="form__part-two">
-					<form-two ref="callValidationTwo" @validation="partTwoValidation" @output-two="outputDataHandleTwo"/>
+					<form-two ref="validateSecond" @output-two="formTwoOutputHandler"/>
 				</div>
 
 				<button v-if="!formPart" @click="onNextClick" class="form__button--next" type="button">Pokračovat</button>
@@ -45,6 +45,7 @@ import axios from "axios"
 export default defineComponent({
 	name: "App",
 	components: { FormTwo, FormOne },
+
 	data() {
 		return {
 			formPart: false,
@@ -58,7 +59,7 @@ export default defineComponent({
 				lastName: "",
 				birthday: "",
 				gender: "",
-				marketingConsent: "",
+				marketingConsent: false,
 			}
 		}
 	},
@@ -68,53 +69,50 @@ export default defineComponent({
 			this.formPart = !this.formPart
 		},
 
-		partOneValidation(data: boolean) {
-			this.partOneValid = data
-		},
+		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+		//@ts-ignore
+		formOneOutputHandler(data) {
+			if (data.isValidate) {
 
-		partTwoValidation(data: boolean) {
-			this.partTwoValid = data
+				this.dataPayload.firstName = data.firstName
+				this.dataPayload.lastName = data.lastName
+				this.dataPayload.email = data.email
+				this.dataPayload.password = data.password
+
+				this.formPartSwitcher()
+			}
 		},
 
 		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 		//@ts-ignore
-		outputDataHandleOne(data) {
-			this.dataPayload.email = data.valueEmail
-			this.dataPayload.password = data.valuePassword
-			this.dataPayload.firstName = data.valueFirstName
-			this.dataPayload.lastName = data.valueLastName
+		formTwoOutputHandler(data) {
+			if(data.isValidate) {
+				this.dataPayload.gender = data.gender
+				this.dataPayload.birthday = data.birthday
+				this.dataPayload.marketingConsent = data.marketing
+
+				this.postData()
+			}
 		},
 
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-		//@ts-ignore
-		outputDataHandleTwo(data) {
-			this.dataPayload.birthday = data.valueBirthday
-			this.dataPayload.gender = data.valueGender
-			this.dataPayload.marketingConsent = data.valueMarketing
+		postData() {
+			axios.post("http://localhost:8080", this.dataPayload).then(response => {
+				console.log(response.data)
+			}).catch(error => {
+				console.error(error)
+			})
 		},
 
 		onNextClick() {
-			if(this.partOneValid) {
-				this.formPartSwitcher()
-			} else {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-				//@ts-ignore
-				this.$refs.callValidationOne.validateInputs()
-			}
+			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+			//@ts-ignore
+			this.$refs.validateFirst.checkValidation()
 		},
 
 		onSubmitClick() {
-			if(this.partTwoValid) {
-				axios.post("127.0.0.1", this.dataPayload).then(response => {
-					console.log(response.data)
-				}).catch(error => {
-					console.error(error)
-				})
-			} else {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-				//@ts-ignore
-				this.$refs.callValidationTwo.validateInputs()
-			}
+			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+			//@ts-ignore
+			this.$refs.validateSecond.checkValidation()
 		}
 
 	}

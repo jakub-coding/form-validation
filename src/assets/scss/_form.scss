@@ -1,4 +1,5 @@
 @import "mixins";
+@import "variables";
 
 .form__title {
 	@include form-title;
@@ -34,4 +35,27 @@
 .form__button--back {
 	@include form-button;
 	@include form-button-back;
+}
+
+.input--inner__radio {
+	.radio__item--field {
+		display: flex;
+		justify-content: start;
+		align-items: center;
+		padding: 1rem 0;
+
+		.radio__item {
+			margin-right: 1rem;
+			label {
+				font-family: $second-font;
+			}
+		}
+	}
+}
+
+.input--inner__confirmation {
+	margin: 2rem 0;
+	label {
+		font-family: $second-font;
+	}
 }

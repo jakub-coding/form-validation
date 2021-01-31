@@ -1,18 +1,60 @@
 <template>
-	<gender-input @input-validation="inputValidation" ref="callGenderValidation" />
-	<birthday-input @input-validation="inputValidation" ref="callBirthdayValidation" />
-	<marketing-input @input-validation="inputValidation" ref="callMarketingValidation"/>
-	<confirmation-input @input-validation="inputValidation" ref="callConfirmationValidation"/>
+	<div class="input">
+		<div class="input--inner">
+			<label for="gender">Pohlaví</label>
+			<select id="gender" v-model="gender" >
+				<option value="">- Vyberte -</option>
+				<option value="men">Muž</option>
+				<option value="women">Žena</option>
+			</select>
+			<p class="input__error">{{genderError}}</p>
+		</div>
+	</div>
+
+	<div class="input">
+		<div class="input--inner">
+			<label for="birthday">Datum narození</label>
+			<input id="birthday" v-model="birthday" type="date">
+			<p class="input__error">{{birthdayError}}</p>
+		</div>
+	</div>
+
+	<div class="input">
+		<p>
+			Chcete dostávat informace z hráčské kabiny a vědět jako první o akcích pro fanoušky a speciálních nabídkách
+			fanshopu? Uděluji souhlas se zpracováním osobních údajů pro marketingové účely.
+		</p>
+		<div class="input--inner__radio">
+
+			<div class="radio__item--field">
+				<div class="radio__item">
+					<input id="marketing-true" v-model="marketing" :value="true" type="radio">
+					<label for="marketing-true">Ano</label>
+				</div>
+				<div class="radio__item">
+					<input id="marketing-false" v-model="marketing" :value="false" type="radio">
+					<label for="marketing-false">Ne</label>
+				</div>
+			</div>
+
+			<p class="input__error">{{marketingError}}</p>
+		</div>
+	</div>
+
+	<div class="input">
+		<div class="input--inner__confirmation">
+			<input id="user-confirm" v-model="confirmation" type="checkbox">
+			<label for="user-confirm">
+				Souhlasím s obchodními podmínkami a beru na vědomí poučení o zpracování mých osobních údajů .
+			</label>
+			<p class="input__error">{{confirmationError}}</p>
+		</div>
+	</div>
 </template>
 
 <script>
-import GenderInput from "@/components/formInputs/genderInput"
-import BirthdayInput from "@/components/formInputs/birthdayInput"
-import MarketingInput from "@/components/formInputs/marketingInput"
-import ConfirmationInput from "@/components/formInputs/confirmationInput"
 export default {
 	name: "formTwo",
-	components: { ConfirmationInput, MarketingInput, BirthdayInput, GenderInput },
 
 	data() {
 		return {
@@ -21,53 +63,98 @@ export default {
 			marketingValid: false,
 			confirmationValid: false,
 
-			dataPartTwo: {
-				valueGender: "",
-				valueBirthday: "",
-				valueMarketing: "",
-				valueConfirmation: "",
-			}
+			genderError: "",
+			birthdayError: "",
+			marketingError: "",
+			confirmationError: "",
+
+			gender: "",
+			birthday: "",
+			marketing: "",
+			confirmation: false,
 		}
 	},
 
 	methods: {
-		inputValidation(data) {
+		checkValidation() {
+			this.validateGender()
+			this.validateBirthday()
+			this.validateMarketing()
+			this.validateConfirmation()
 
-			if(data.input === "gender") {
-				this.genderValid = data.isValid
-				this.dataPartTwo.valueGender = data.value
-			}
-			if(data.input === "birthday") {
-				this.birthdayValid = data.isValid
-				this.dataPartTwo.valueBirthday = data.value
-			}
-			if(data.input === "marketing") {
-				this.marketingValid = data.isValid
-				this.dataPartTwo.valueMarketing = data.value
-			}
-			if(data.input === "confirmation") {
-				this.confirmationValid = data.isValid
-				this.dataPartTwo.valueConfirmation = data.value
-			}
-
-			this.validateAllInputs()
+			this.checkIfValidate()
 		},
 
-		validateAllInputs() {
-			if(this.genderValid && this.birthdayValid && this.marketingValid && this.confirmationValid) {
-				this.$emit("validation", true)
-				this.$emit("outputTwo", this.dataPartTwo)
+		validateGender() {
+			if (this.gender) {
+				this.genderValid = true
+				this.genderError = ""
 			} else {
-				this.$emit("validation", false)
+				this.genderValid = false
+				this.genderError = "Pole Pohlaví je povinné"
 			}
 		},
 
+		validateBirthday() {
+			if (this.birthday) {
+				this.birthdayValid = true
+				this.birthdayError = ""
+			} else {
+				this.birthdayValid = false
+				this.birthdayError = "Pole Datum narození je povinné"
+			}
+		},
 
-		validateInputs() {
-			this.$refs.callGenderValidation.validateInput()
-			this.$refs.callBirthdayValidation.validateInput()
-			this.$refs.callMarketingValidation.validateInput()
-			this.$refs.callConfirmationValidation.validateInput()
+		validateMarketing() {
+			if(this.marketing !== ""){
+				this.marketingValid = true
+				this.marketingError = ""
+			} else {
+				this.marketingValid = false
+				this.marketingError = "Vyberte jednu z možností"
+			}
+		},
+
+		validateConfirmation() {
+			if(this.confirmation) {
+				this.confirmationValid = true
+				this.confirmationError = ""
+			} else {
+				this.confirmationValid = false
+				this.confirmationError = "nutný souhlas s obchodními podmínkami a zpracováním osobních údajů"
+			}
+		},
+
+		checkIfValidate() {
+			const dataPayload = {
+				isValidate: false,
+				gender: this.gender,
+				birthday: this.birthday,
+				marketing: this.marketing,
+			}
+
+			if (this.genderValid && this.birthdayValid && this.marketingValid && this.confirmationValid) {
+				dataPayload.isValidate = true
+				this.$emit("outputTwo", dataPayload)
+			}
+		},
+	},
+
+	watch: {
+		gender: function () {
+			this.validateGender()
+		},
+
+		birthday: function () {
+			this.validateBirthday()
+		},
+
+		marketing: function () {
+			this.validateMarketing()
+		},
+
+		confirmation: function () {
+			this.validateConfirmation()
 		}
 	}
 }
