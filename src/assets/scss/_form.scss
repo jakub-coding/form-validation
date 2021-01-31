@@ -1,0 +1,37 @@
+@import "mixins";
+
+.form__title {
+	@include form-title;
+}
+
+.input {
+	@include input;
+}
+
+.form__buttons {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	.buttons__label {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+}
+
+.form__button--next {
+	@include form-button;
+	@include form-button-next;
+}
+
+.form__button--submit {
+	@include form-button;
+	@include form-button-submit;
+}
+
+.form__button--back {
+	@include form-button;
+	@include form-button-back;
+}

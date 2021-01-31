@@ -1,0 +1,37 @@
+//import extern
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+//importing assets
+@import "variables";
+@import "mixins";
+
+
+// Resets
+@include elements {
+	margin: 0;
+	padding: 0;
+}
+
+@include headings {
+	margin: 0;
+	padding: 0;
+}
+
+//import parts
+@import "layout";
+@import "form";
+
+// Base Setting
+#app {
+	font-family: $main-font;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	color: $font-color;
+}
+
+
+//dev Layout
+* {
+	//outline: 1px solid black;
+}

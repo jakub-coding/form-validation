@@ -1,0 +1,114 @@
+@import "variables";
+
+@mixin elements {
+	html, body, ul, ol, li, a, p {
+		@content
+	}
+}
+
+@mixin headings {
+	h1, h2, h3, h4, h5, h6 {
+		@content
+	}
+}
+
+@mixin main_title {
+	font-size: 5rem;
+}
+
+@mixin form-button {
+	display: inline-block;
+	padding: 1.2rem 0;
+	border-radius: 2rem;
+	border: none;
+	color: $bg-color;
+	font-family: $main-font;
+	font-size: 1.2rem;
+	cursor: pointer;
+}
+
+@mixin form-button-next {
+	background: $muted-color;
+	width: 100%;
+}
+
+@mixin form-button-submit {
+	width: 100%;
+	background: $second-color;
+}
+
+@mixin form-button-back {
+	width: auto;
+	background: none;
+	color: $highlite-color;
+	display: inline-block;
+	padding: 0 2rem;
+}
+
+@mixin form-title {
+	padding: 2rem 0;
+	span {
+		font-size: 1.2rem;
+		color: $muted-color;
+	}
+}
+
+@mixin text-element {
+	input {
+		width: 100%;
+		background: none;
+		padding: 1.2rem;
+		margin-bottom: .5rem;
+		border: 2px solid $font-color;
+		border-radius: 2rem;
+		color: $font-color;
+		font-family: $main-font;
+		font-size: 1.2rem;
+		box-sizing: border-box;
+
+		&:focus {
+			outline: none;
+		}
+
+	}
+}
+
+@mixin select-element {
+	select {
+		-webkit-appearance:none;
+		-moz-appearance:none;
+		appearance:none;
+		width: 100%;
+		padding: 1.2rem;
+		font-size: 1.2rem;
+		font-family: $main-font;
+		border-radius: 2rem;
+		outline: none;
+		border: 2px solid $font-color;
+		color: $font-color;
+		background: none;
+		margin-bottom: .5rem;
+
+		&:focus {
+			outline: none;
+		}
+	}
+}
+
+@mixin input {
+	margin-bottom: 1rem;
+	.input--inner {
+		label {
+			font-size: 1.5rem;
+			padding-bottom: .5rem;
+			display: inline-block;
+		}
+
+		@include text-element;
+		@include select-element;
+	}
+
+	.input--error {
+		color: $highlite-color;
+	}
+}
